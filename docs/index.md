@@ -12,90 +12,104 @@ This repository contains a Python implementation of the **Merton (1976) jump–d
 - **README:** Quickstart, references, and API details are in the repository.  
 - **Math on this page** is rendered with MathJax.
 
-<!-- Load MathJax explicitly (works even without kramdown math engine) -->
+<!-- Load MathJax -->
 <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
+
+<style>
+  .mjx-chtml { font-size: 120% !important; }
+  .MathJax_Display { margin: 1.2em 0 !important; }
+</style>
 
 ---
 
 ## Mathematical Model
 
-Let \(S_t\) denote the asset price. The **Merton jump–diffusion** SDE is
+Let  
+
 $$
-\frac{dS_t}{S_{t^-}} \;=\; (a - \lambda k)\,dt \;+\; \sigma\,dW_t \;+\; dq_t,
+S_t
+$$  
+
+be the asset price. The **Merton jump–diffusion** stochastic differential equation (SDE) is  
+
 $$
-where \(W_t\) is standard Brownian motion, \(q_t=(Y-1)\,dN_t\) with \(N_t\) a Poisson process of
-intensity \(\lambda>0\), and \(Y\) is the jump **multiplier** (i.i.d., independent of \(W_t\) and \(N_t\)).
-The drift includes the jump-compensation term via
+\frac{dS_t}{S_{t^-}} = (a - \lambda k)\,dt + \sigma\,dW_t + dq_t
+$$  
+
+where  
+
 $$
-k \;:=\; \mathbb{E}[Y-1].
+dq_t = (Y-1)\,dN_t, \quad N_t \text{ is Poisson with intensity } \lambda > 0
+$$  
+
+and the jump multiplier satisfies  
+
 $$
+S_t = Y\,S_{t^-}, \quad k = \mathbb{E}[Y-1].
+$$
+
+---
 
 ### Merton’s specification (lognormal jumps)
 
-Write \(Y=e^{J}\) with
 $$
-J \sim \mathcal{N}(\mu_J,\sigma_J^2), \qquad
-k \;=\; \mathbb{E}[e^{J}-1] \;=\; \exp\!\big(\mu_J+\tfrac12\sigma_J^2\big)-1.
+Y = e^{J}, \quad J \sim \mathcal{N}(\mu_J, \sigma_J^2),
+$$  
+
+so that  
+
+$$
+k = \mathbb{E}[e^J - 1] = \exp\left(\mu_J + \frac12\sigma_J^2\right) - 1.
 $$
 
 ---
 
 ## Log-Price Dynamics
 
-Define \(X_t := \ln S_t\). By Itô’s lemma with jumps,
+Let  
+
 $$
-dX_t
-\;=\;
-\big(a - \lambda k - \tfrac12\sigma^2\big)\,dt
-\;+\; \sigma\,dW_t
-\;+\; \ln Y \, dN_t.
+X_t = \ln S_t
+$$  
+
+then by Itô’s lemma with jumps  
+
+$$
+dX_t = \left( a - \lambda k - \frac12\sigma^2 \right) dt + \sigma\,dW_t + \ln Y \, dN_t.
 $$
 
 ---
 
-## Exact Discretization over \(\Delta t\)
+## Exact Discretization over \( \Delta t \)
 
-Integrate on \([t,\,t+\Delta t]\). Let \(Z\sim\mathcal{N}(0,1)\), and
-\(K := N_{t+\Delta t}-N_t \sim \mathrm{Poisson}(\lambda\Delta t)\). Then, conditionally on \(K\),
-$$
-\sum_{j=1}^{K} \ln Y_j \;\sim\; \mathcal{N}\!\big(K\mu_J,\;K\sigma_J^2\big).
-$$
+Over an interval \( \Delta t \),  
 
-Hence the **exact** log-return is
 $$
-\ln\frac{S_{t+\Delta t}}{S_t}
-\;=\;
-\big(a - \lambda k - \tfrac12\sigma^2\big)\Delta t
-\;+\; \sigma\sqrt{\Delta t}\,Z
-\;+\; \sum_{j=1}^{K} \ln Y_j.
-$$
+\int_t^{t+\Delta t} \sigma\,dW_s = \sigma\sqrt{\Delta t}\,Z, \quad Z \sim \mathcal{N}(0,1),
+$$  
 
-Equivalently, the **price update** is
 $$
-S_{t+\Delta t}
-\;=\;
-S_t\,
-\exp\!\Big(
-\big(a - \lambda k - \tfrac12\sigma^2\big)\Delta t
-\;+\; \sigma\sqrt{\Delta t}\,Z
-\;+\; \sum_{j=1}^{K} \ln Y_j
-\Big).
+K := N_{t+\Delta t} - N_t \sim \mathrm{Poisson}(\lambda\Delta t),
+$$  
+
+and conditionally on \(K\),  
+
+$$
+\sum_{j=1}^{K} \ln Y_j \sim \mathcal{N}(K\mu_J, K\sigma_J^2).
 $$
 
-> **Risk-neutral measure.** Set \(a=r\) and retain the \(-\lambda k\) compensation so that the discounted price is a martingale.
+Thus, the exact log-return is  
 
----
+$$
+\ln\frac{S_{t+\Delta t}}{S_t} = \left(a - \lambda k - \frac12\sigma^2\right) \Delta t + \sigma\sqrt{\Delta t}\,Z + \sum_{j=1}^{K} \ln Y_j.
+$$
 
-## Quickstart
+Equivalently, the price update is  
 
-```bash
-git clone https://github.com/louisrutgeerts01/merton-dfo-calibration.git
-cd merton-dfo-calibration
+$$
+S_{t+\Delta t} = S_t \exp\left[ \left(a - \lambda k - \frac12\sigma^2\right) \Delta t + \sigma\sqrt{\Delta t}\,Z + \sum_{j=1}^{K} \ln Y_j \right].
+$$
 
-python -m venv .venv
-source .venv/bin/activate   # macOS/Linux
-# .venv\Scripts\activate    # Windows
-
-pip install -r requirements.txt
+> **Risk-neutral measure:** Set \(a = r\) and keep the \( -\lambda k \) term so discounted prices are martingales.
