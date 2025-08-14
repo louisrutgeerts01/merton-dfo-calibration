@@ -5,4 +5,5 @@ theme: jekyll-theme-cayman
 markdown: kramdown
 kramdown:
   input: GFM
+  hard_wrap: false
   math_engine: mathjax

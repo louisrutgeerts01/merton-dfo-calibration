@@ -1,6 +1,7 @@
 ---
 title: Merton DFO Calibration
 layout: default
+mathjax: true
 ---
 
 # Merton Jump–Diffusion Calibration (Derivative-Free)
@@ -11,7 +12,7 @@ This repository contains a Python implementation of the **Merton (1976) jump–d
 - **README:** Quickstart, references, and API details are in the repository.  
 - **Math on this page** is rendered with MathJax.
 
-<!-- Load MathJax -->
+<!-- Load MathJax explicitly (works even without kramdown math engine) -->
 <script type="text/javascript" async
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
@@ -22,31 +23,32 @@ This repository contains a Python implementation of the **Merton (1976) jump–d
 
 Let \(S_t\) denote the asset price. The **Merton jump–diffusion** SDE is
 $$
-\frac{dS_t}{S_{t^-}}
-\;=\;
-\big(a - \lambda k\big)\,dt \;+\; \sigma\,dW_t \;+\; dq_t,
+\frac{dS_t}{S_{t^-}} \;=\; (a - \lambda k)\,dt \;+\; \sigma\,dW_t \;+\; dq_t,
 $$
-where \(W_t\) is standard Brownian motion, \(q_t=(Y-1)\,dN_t\) with \(N_t\) a Poisson process of intensity \(\lambda>0\), and \(Y\) is the jump **multiplier** (i.i.d., independent of \(W_t\) and \(N_t\)). The drift includes the jump-compensation term via
+where \(W_t\) is standard Brownian motion, \(q_t=(Y-1)\,dN_t\) with \(N_t\) a Poisson process of
+intensity \(\lambda>0\), and \(Y\) is the jump **multiplier** (i.i.d., independent of \(W_t\) and \(N_t\)).
+The drift includes the jump-compensation term via
 $$
 k \;:=\; \mathbb{E}[Y-1].
 $$
 
 ### Merton’s specification (lognormal jumps)
+
 Write \(Y=e^{J}\) with
 $$
-J \sim \mathcal{N}(\mu_J,\sigma_J^2),\qquad
-k \;=\; \mathbb{E}[e^{J}-1] \;=\; \exp\!\Big(\mu_J+\tfrac12\sigma_J^2\Big)-1.
+J \sim \mathcal{N}(\mu_J,\sigma_J^2), \qquad
+k \;=\; \mathbb{E}[e^{J}-1] \;=\; \exp\!\big(\mu_J+\tfrac12\sigma_J^2\big)-1.
 $$
 
 ---
 
 ## Log-Price Dynamics
 
-Define \(X_t := \ln S_t\). By Itô’s formula with jumps,
+Define \(X_t := \ln S_t\). By Itô’s lemma with jumps,
 $$
 dX_t
 \;=\;
-\Big(a - \lambda k - \tfrac12\sigma^2\Big)\,dt
+\big(a - \lambda k - \tfrac12\sigma^2\big)\,dt
 \;+\; \sigma\,dW_t
 \;+\; \ln Y \, dN_t.
 $$
@@ -65,7 +67,7 @@ Hence the **exact** log-return is
 $$
 \ln\frac{S_{t+\Delta t}}{S_t}
 \;=\;
-\Big(a - \lambda k - \tfrac12\sigma^2\Big)\Delta t
+\big(a - \lambda k - \tfrac12\sigma^2\big)\Delta t
 \;+\; \sigma\sqrt{\Delta t}\,Z
 \;+\; \sum_{j=1}^{K} \ln Y_j.
 $$
@@ -82,7 +84,7 @@ S_t\,
 \Big).
 $$
 
-> **Risk-neutral measure.** Set \(a=r\) (risk-free rate) and retain the \(-\lambda k\) compensation so that the discounted price is a martingale.
+> **Risk-neutral measure.** Set \(a=r\) and retain the \(-\lambda k\) compensation so that the discounted price is a martingale.
 
 ---
 
