@@ -26,7 +26,7 @@ This repository contains a Python implementation of the **Merton (1976) jump–d
 
 ## Mathematical Model
 
-Let  $$ S_t $$ be the asset price. The **Merton jump–diffusion** stochastic differential equation (SDE) is  
+Let  $ S_t $ be the asset price. The **Merton jump–diffusion** stochastic differential equation (SDE) is  
 
 $$
 \frac{dS_t}{S_{t^-}} = (a - \lambda k)\,dt + \sigma\,dW_t + dq_t
