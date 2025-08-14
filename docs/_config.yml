@@ -1,0 +1,8 @@
+title: Merton DFO Calibration
+description: Minimal project site
+theme: jekyll-theme-cayman
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  math_engine: mathjax
